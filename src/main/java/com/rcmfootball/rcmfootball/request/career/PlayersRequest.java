@@ -2,7 +2,6 @@ package com.rcmfootball.rcmfootball.request.career;
 
 import java.math.BigDecimal;
 
-import com.rcmfootball.rcmfootball.model.career.Nationality;
 import com.rcmfootball.rcmfootball.model.career.Players;
 import com.rcmfootball.rcmfootball.model.enumerate.BestFootEnum;
 import com.rcmfootball.rcmfootball.model.enumerate.PlayersPositions;
@@ -30,13 +29,17 @@ public class PlayersRequest{
 	@NotNull(message="coloque o número da camisa")
 	@Max(value=99, message="o número da camisa deve ser de 1 a 99")
 	@Min(value=1, message="o número da camisa deve ser de 1 a 99")
+	@Digits(integer=2, fraction=0, message="numero da camisa invalida")
 	private Integer shirtNumber;
 	@NotNull(message="a idade do jogador é obrigatória")
 	@Max(value=50, message="a idade máxima é de 50 anos")
 	@Min(value=15, message="a idade mínima é de 15 anos")
+	@Digits(integer=2, fraction=0, message="idade inválida")
 	private Integer age;
 	private Boolean playsForNationTeam;
+	@Digits(integer=1, fraction=2, message="formatação invalida para altura. Formatação correta: x.xx")
 	private BigDecimal height;
+	@Digits(integer=3, fraction=1, message="formatação invalida para peso, Formatação correta: xx.x")
 	private BigDecimal weight;
 	@NotNull(message="o pé dominante é obrigatório")
 	private BestFootEnum bestFoot;

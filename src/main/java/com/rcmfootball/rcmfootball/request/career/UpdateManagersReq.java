@@ -1,13 +1,8 @@
 package com.rcmfootball.rcmfootball.request.career;
 
 import com.rcmfootball.rcmfootball.model.career.Managers;
-import com.rcmfootball.rcmfootball.model.career.Nationality;
-import com.rcmfootball.rcmfootball.model.career.Teams;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateManagersReq {
 	private String urlPhoto;
-	@NotBlank(message="o nome não deve ser nulo")
 	@Min(value=0, message="o valor não deve ser número negativo")
 	@Max(value=100, message="valor acima do máximo permitido")
 	private Integer fansReputation;

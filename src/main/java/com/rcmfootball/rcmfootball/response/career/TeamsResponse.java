@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TeamsResponse {
 	private Long idTeam;
+	private String teamCrestUrl;
 	private String name;
 	private String abbreviatedName;
 	private Integer numberOfFans;
@@ -22,6 +23,7 @@ public class TeamsResponse {
 	public static TeamsResponse toDto(Teams t) {
 		return new TeamsResponse(
 				t.getIdTeam(),
+				t.getTeamCrestUrl(),
 				t.getName(),
 				t.getAbbreviatedName(),
 				t.getNumberOfFans(),

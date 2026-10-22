@@ -20,6 +20,7 @@ import lombok.Setter;
 
 public class Nationality {
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idNationality;
 	@Column(nullable=true)
 	private String flag;

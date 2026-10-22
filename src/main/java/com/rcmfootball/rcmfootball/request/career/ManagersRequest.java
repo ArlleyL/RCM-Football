@@ -21,12 +21,13 @@ public class ManagersRequest {
 	private String name;
 	private ProfissionEnum profission;
 	@NotBlank(message="o país é obrigatório")
+	@Size(min=3, max=3)
 	private String nation;
 	@Min(value=0, message="o valor não deve ser número negativo")
-	@Max(value=100, message="valor acima do máximo permitido")
+	@Max(value=99, message="valor acima do máximo permitido")
 	private Integer fansReputation;
 	@Min(value=0, message="o valor não deve ser número negativo")
-	@Max(value=100, message="valor acima do máximo permitido")
+	@Max(value=99, message="valor acima do máximo permitido")
 	private Integer teamReputation;
 	
 	public Managers toEntity() {

@@ -2,14 +2,13 @@ package com.rcmfootball.rcmfootball.request.career;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.rcmfootball.rcmfootball.model.career.Players;
 import com.rcmfootball.rcmfootball.model.career.PlayersSkills;
 import com.rcmfootball.rcmfootball.model.enumerate.OverallWeightsEnum;
-import com.rcmfootball.rcmfootball.model.enumerate.PlayersPositions;
-import com.rcmfootball.rcmfootball.model.enumerate.ProfissionEnum;
 
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +18,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PlayersSkillsRequest {
 	
+	@Digits(integer=2, fraction=0, message="limite de digitos atingido. número máximo de digitos: 2")
+	@Max(value=99, message="o limite máximo é 99")
+	@Min(value=10, message="o limite minimo é 10")
 	private Integer speed;
+	@Digits(integer=2, fraction=0, message="limite de digitos atingido. número máximo de digitos: 2")
+	@Max(value=99, message="o limite máximo é 99")
+	@Min(value=10, message="o limite minimo é 10")
 	private Integer tecnic;
+	@Digits(integer=2, fraction=0, message="limite de digitos atingido. número máximo de digitos: 2")
+	@Max(value=99, message="o limite máximo é 99")
+	@Min(value=10, message="o limite minimo é 10")
 	private Integer pass;
+	@Digits(integer=2, fraction=0, message="limite de digitos atingido. número máximo de digitos: 2")
+	@Max(value=99, message="o limite máximo é 99")
+	@Min(value=10, message="o limite minimo é 10")
 	private Integer finish;
+	@Digits(integer=2, fraction=0, message="limite de digitos atingido. número máximo de digitos: 2")
+	@Max(value=99, message="o limite máximo é 99")
+	@Min(value=10, message="o limite minimo é 10")
 	private Integer fisic;
+	@Digits(integer=2, fraction=0, message="limite de digitos atingido. número máximo de digitos: 2")
+	@Max(value=99, message="o limite máximo é 99")
+	@Min(value=10, message="o limite minimo é 10")
 	private Integer mentality;
 	
 	public PlayersSkills toEntity() {

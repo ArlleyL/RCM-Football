@@ -13,6 +13,8 @@ import com.rcmfootball.rcmfootball.request.career.TransferRequest;
 import com.rcmfootball.rcmfootball.response.career.TransferResponse;
 import com.rcmfootball.rcmfootball.service.career.TransferService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/transfer")
 public class TransferController {
@@ -20,14 +22,14 @@ public class TransferController {
 	private TransferService transferService;
 	
 	@PostMapping("/player/save/{idPlayer}/{idTeam}")
-	public TransferResponse transferPlayer(@RequestBody TransferRequest transferReq, @PathVariable Long idPlayer, @PathVariable Long idTeam) {
+	public TransferResponse transferPlayer(@RequestBody @Valid TransferRequest transferReq, @PathVariable Long idPlayer, @PathVariable Long idTeam) {
 		return transferService.transferPlayer(transferReq, "SeuMadruga", idPlayer, idTeam);
 	}
 	@PatchMapping("/player/update/{idTransfer}/{idPlayer}")
-	public TransferResponse upadateTransferPlayer(@RequestBody TransferRequest tranferReq, @PathVariable Long idTransfer, @PathVariable Long idPlayer) {
+	public TransferResponse upadateTransferPlayer(@RequestBody @Valid TransferRequest tranferReq, @PathVariable Long idTransfer, @PathVariable Long idPlayer) {
 		return transferService.UpdateTransferPlayer(tranferReq, idTransfer, idPlayer, "SeuMadruga");
 	}
-	@DeleteMapping("/player/delete")
+	@DeleteMapping("/player/delete/{idTransfer}/{idPlayer}")
 	public void deleteTransferPlayer(@PathVariable Long idTransfer, @PathVariable Long idPlayer) {
 		transferService.deleteTransferHistory(idTransfer, idPlayer, "SeuMadruga");
 	}

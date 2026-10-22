@@ -31,7 +31,7 @@ public class TransferResponse {
 	private Boolean isAccepted;
 	private Boolean renovation;
 	private Boolean offerActive;
-	private Teams newTeam;
+	private String newTeamName;
 	
 	public static TransferResponse toDto(Transfer t) {
 		return new TransferResponse(
@@ -43,7 +43,7 @@ public class TransferResponse {
 				t.getIsAccepted(),
 				t.getRenovation(),
 				t.getOfferActive(),
-				t.getNewTeam()
+				t.getNewTeam().getName()
 				);
 	}
 }

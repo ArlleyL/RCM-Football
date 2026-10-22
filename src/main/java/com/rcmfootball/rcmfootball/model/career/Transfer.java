@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="history_transfer")
+@Table(name="transfers")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,31 +29,26 @@ public class Transfer {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idTransfer;
-	@Column(nullable=false)
-	@Digits(integer=9, fraction=2, message="número de caracteres atingido")
-	@PositiveOrZero(message="o valor deve ser acima de 0")
+	@Column(nullable=false, precision=11, scale=2)
 	private BigDecimal totalValue;
-	@Column(nullable=false)
-	@Digits(integer=6, fraction=2, message="número de caracteres atingido")
-	@PositiveOrZero(message="o valor deve ser acima de 0")
+	@Column(nullable=false, precision=8, scale=2)
 	private BigDecimal wage;
-	@Min(0)
-	@Max(5)
+	@Column(precision=1)
 	private Integer year;
-	@PositiveOrZero(message="O valor deve ser acima de 0")
+	@Column(precision=1)
 	private Integer month;
 	private Boolean isAccepted;
 	@Column(nullable=false)
 	private Boolean renovation;
 	@Column(nullable=false)
-	private Boolean offerActive;
+	private Boolean offerActive = true;
 	
 	@ManyToOne
-	@JoinColumn(name="id_old_team")
-	private Teams oldTeam;
+	@JoinColumn(name="id_current_team")
+	private Teams currentTeam;
 	
 	@ManyToOne
-	@JoinColumn(name="id_new_team", nullable=false)
+	@JoinColumn(name="id_new_team")
 	private Teams newTeam;
 	
 	@ManyToOne

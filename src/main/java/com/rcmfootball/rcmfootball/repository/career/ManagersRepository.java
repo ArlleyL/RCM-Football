@@ -1,5 +1,7 @@
 package com.rcmfootball.rcmfootball.repository.career;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +17,9 @@ public interface ManagersRepository extends JpaRepository<Managers, Long>{
 	Managers findByManagerModeAndProfission(Users user, ProfissionEnum profission);
 
 	Managers findByPlayerModeAndProfission(Users user, ProfissionEnum profission);
-	
-	
+
+	List<Managers> findByManagerMode(Users user);
+
+	List<Managers> findByPlayerMode(Users user);
 
 }

@@ -3,6 +3,7 @@ package com.rcmfootball.rcmfootball.controller.career;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,15 +16,20 @@ import com.rcmfootball.rcmfootball.request.career.PlayersSkillsRequest;
 import com.rcmfootball.rcmfootball.request.career.UpdatePlayersReq;
 import com.rcmfootball.rcmfootball.response.career.PlayerSkillResponse;
 import com.rcmfootball.rcmfootball.response.career.PlayersResponse;
-import com.rcmfootball.rcmfootball.service.career.PlayerModeService;
+import com.rcmfootball.rcmfootball.service.career.PlayersService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/player")
-public class PlayerModeController {
+public class PlayersController {
 	@Autowired
-	private PlayerModeService playersService;
+	private PlayersService playersService;
+	
+	@GetMapping("/character/profile")
+	public PlayersResponse playerCharacterProfile() {
+		return playersService.playerCharacterProfile("SeuMadruga");
+	}
 	
 	@PostMapping("/character/save")
 	public PlayersResponse savePlayerOfUser(@RequestBody @Valid PlayersRequest playerReq) {
@@ -53,12 +59,16 @@ public class PlayerModeController {
 	}
 	
 	
+	@GetMapping("/skills/character")
+	public PlayerSkillResponse skillsByPlayerCharacter() {
+		return playersService.findSkillByPlayerCharacter("SeuMadruga");
+	}
 	@PostMapping("/skills/character/save")
-	public PlayerSkillResponse savePlayerSkill(@RequestBody PlayersSkillsRequest skillReq) {
+	public PlayerSkillResponse savePlayerSkill(@Valid @RequestBody PlayersSkillsRequest skillReq) {
 		return playersService.createSkillsPlayerCharacter(skillReq, "SeuMadruga");
 	}
-	@PatchMapping("/skills/character/update")
-	public PlayerSkillResponse updatePlayerSkill(@PathVariable Long id, @RequestBody PlayersSkillsRequest skillReq) {
+	@PatchMapping("/skills/character/update/{id}")
+	public PlayerSkillResponse updatePlayerSkill(@PathVariable Long id, @Valid @RequestBody PlayersSkillsRequest skillReq) {
 		return playersService.updateSkillsPlayerCharacter(skillReq, "SeuMadruga");
 	}
 }

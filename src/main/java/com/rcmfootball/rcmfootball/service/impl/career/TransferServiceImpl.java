@@ -1,13 +1,16 @@
 package com.rcmfootball.rcmfootball.service.impl.career;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rcmfootball.rcmfootball.model.career.Finances;
 import com.rcmfootball.rcmfootball.model.career.Players;
 import com.rcmfootball.rcmfootball.model.career.Teams;
 import com.rcmfootball.rcmfootball.model.career.Transfer;
 import com.rcmfootball.rcmfootball.model.users.Users;
-import com.rcmfootball.rcmfootball.repository.career.ManagersRepository;
+import com.rcmfootball.rcmfootball.repository.career.FinancesRepository;
 import com.rcmfootball.rcmfootball.repository.career.PlayersRepository;
 import com.rcmfootball.rcmfootball.repository.career.TeamsRepository;
 import com.rcmfootball.rcmfootball.repository.career.TransferRepository;
@@ -28,6 +31,9 @@ public class TransferServiceImpl implements TransferService{
 	private UsersRepository usersRepository;
 	@Autowired
 	private TransferRepository transferRepository;
+	//@Autowired
+	//private FinancesRepository financesRepository;
+	
 	
 	@Override
 	public TransferResponse transferPlayer(TransferRequest transferReq, String username, Long idPlayer, Long idTeam) {
@@ -38,17 +44,17 @@ public class TransferServiceImpl implements TransferService{
 		Transfer transfer = transferReq.toEntity();
 		
 		if(player.getUserCharacter() != null) {
-			if(player.getUserCharacter() != user) new RuntimeException("Não é permitido alterar o jogador personagem de outro usuário");
+			if(player.getUserCharacter() != user) throw new RuntimeException("Não é permitido alterar o jogador personagem de outro usuário");
 		}
-		if((player.getPlayerMode() != null && player.getUserCharacter() == null) || team.getPlayerMode() != null) {
-			if(player.getPlayerMode() != user) new RuntimeException("Não é permitido alterar o jogador de outro usuário");
+		if(player.getPlayerMode() != null && player.getUserCharacter() == null || team.getPlayerMode() != null) {
+			if(player.getPlayerMode() != user) throw new RuntimeException("Não é permitido alterar o jogador de outro usuário");
 		}
 		if(player.getManagerMode() != null || team.getManagerMode() != null) {
-			if(player.getManagerMode() != user) new RuntimeException("Não é permitido alterar o jogador de outro usuário");
+			if(player.getManagerMode() != user) throw new RuntimeException("Não é permitido alterar o jogador de outro usuário");
 		}
 		
 		transfer.setPlayer(player);
-		transfer.setOldTeam(player.getCurrentTeam());
+		transfer.setCurrentTeam(player.getCurrentTeam());
 		transfer.setNewTeam(team);
 		player.setCurrentTeam(team);
 		
@@ -64,19 +70,19 @@ public class TransferServiceImpl implements TransferService{
 		Players player = playersRepository.findById(idPlayer).orElseThrow(()->new RuntimeException("Nenhum jogador contrado com o id: "+idPlayer));
 		
 		if(player.getUserCharacter() != null) {
-			if(player.getUserCharacter() != user) new RuntimeException("Não é permitido alterar o jogador personagem de outro usuário");
+			if(player.getUserCharacter() != user) throw new RuntimeException("Não é permitido alterar o jogador personagem de outro usuário");
 		}
 		if(player.getPlayerMode() != null && player.getUserCharacter() == null) {
-			if(player.getPlayerMode() != user) new RuntimeException("Não é permitido alterar o jogador de outro usuário");
+			if(player.getPlayerMode() != user) throw new RuntimeException("Não é permitido alterar o jogador de outro usuário");
 		}
 		if(player.getManagerMode() != null) {
-			if(player.getManagerMode() != user) new RuntimeException("Não é permitido alterar o jogador de outro usuário");
+			if(player.getManagerMode() != user) throw new RuntimeException("Não é permitido alterar o jogador de outro usuário");
 		}
 		Transfer transfer = transferRepository.findByIdTransferAndPlayer(idPlayer, player);
 		
 		transferReq.updateTransferDetailsPlayer(transfer);
 		
-		if(transfer.getIsAccepted() == false) player.setCurrentTeam(transfer.getOldTeam());
+		if(transfer.getIsAccepted() == false) player.setCurrentTeam(transfer.getCurrentTeam());
 		
 		playersRepository.save(player);
 		transferRepository.save(transfer);
@@ -100,4 +106,5 @@ public class TransferServiceImpl implements TransferService{
 		
 		transferRepository.delete(tranferExisting);
 	}
+	
 }

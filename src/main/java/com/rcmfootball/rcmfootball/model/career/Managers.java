@@ -13,8 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,11 +39,9 @@ public class Managers {
 	@ManyToOne
 	@JoinColumn(name="id_current_team")
 	private Teams currentTeam;
-	@Min(0)
-	@Max(100)
+	@Column(nullable=false, precision=2)
 	private Integer fansReputation;
-	@Min(0)
-	@Max(100)
+	@Column(nullable=false, precision=2)
 	private Integer teamReputation;
 	
 	@ManyToOne

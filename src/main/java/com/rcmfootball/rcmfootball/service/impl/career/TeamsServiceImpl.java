@@ -1,7 +1,5 @@
 package com.rcmfootball.rcmfootball.service.impl.career;
 
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +14,9 @@ import com.rcmfootball.rcmfootball.request.career.UpdateTeamReq;
 import com.rcmfootball.rcmfootball.response.career.TeamsResponse;
 import com.rcmfootball.rcmfootball.service.career.TeamsService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TeamsServiceImpl implements TeamsService{
 	@Autowired
@@ -26,8 +27,28 @@ public class TeamsServiceImpl implements TeamsService{
 	private UsersRepository usersRepository;
 	
 	@Override
+	public List<TeamsResponse> findAllTeamPlayerMode(String username){
+		Users user = usersRepository.findByUsername(username);
+		List<Teams> team = teamsRepository.findByPlayerMode(user);
+		return team.stream().map(TeamsResponse::toDto).collect(Collectors.toList());
+	}
+	
+	@Override
 	public TeamsResponse createTeamPlayerMode(TeamsRequest teamReq, String username) {
 		Users user = usersRepository.findByUsername(username);
+		List<Teams> teamExistent = teamsRepository.findByPlayerMode(user);
+		
+		for(Teams team : teamExistent) {
+			if(teamReq.getName().equalsIgnoreCase(team.getName())) {
+				throw new RuntimeException("Há outro time com o nome '"+teamReq.getName()+"'");
+			}
+			if(teamReq.getAbbreviatedName().equalsIgnoreCase(team.getAbbreviatedName())) {
+				throw new RuntimeException("Há outro time com a abreviação '"+teamReq.getAbbreviatedName()+"'");
+			}
+		}
+		if(teamExistent.size() == 30) {
+			throw new RuntimeException("Limite atingido de criação de times");
+		}
 		
 		Teams team = teamReq.toEntity();
 		Nationality nation = nationsRepository.findByCod(teamReq.getNation());
@@ -43,10 +64,8 @@ public class TeamsServiceImpl implements TeamsService{
 	public TeamsResponse updateTeamPlayerMode(UpdateTeamReq teamReq, String username, Long id) {
 		Users user = usersRepository.findByUsername(username);
 		Teams team = teamsRepository.findByIdTeamAndPlayerMode(id, user);
-		
-		if(Objects.isNull(team)) {
-			new RuntimeException("Não encotrado nenhum registro com o id: "+ id);
-		}
+
+		teamReq.dtoToUpdateTeam(team);
 		
 		teamsRepository.save(team);
 		
@@ -54,8 +73,24 @@ public class TeamsServiceImpl implements TeamsService{
 	}
 	
 	@Override
+	public List<TeamsResponse> findAllTeamManagerMode(String username){
+		Users user = usersRepository.findByUsername(username);
+		List<Teams> team = teamsRepository.findByManagerMode(user);
+		return team.stream().map(TeamsResponse::toDto).collect(Collectors.toList());
+	}
+	
+	@Override
 	public TeamsResponse createTeamManagerMode(TeamsRequest teamReq, String username) {
 		Users user = usersRepository.findByUsername(username);
+		List<Teams> teamExistent = teamsRepository.findByManagerMode(user);
+		
+		for(Teams team : teamExistent) {
+			if(teamReq.getName().equalsIgnoreCase(team.getName())) throw new RuntimeException("Há outro time com o nome '"+teamReq.getName()+"'");
+			if(teamReq.getAbbreviatedName().equalsIgnoreCase(team.getAbbreviatedName())) throw new RuntimeException("Há outro time com a abreviação '"+teamReq.getAbbreviatedName()+"'");
+		}
+		if(teamExistent.size() == 30) {
+			throw new RuntimeException("Limite atingido de criação de times");
+		}
 		
 		Teams team = teamReq.toEntity();
 		Nationality nation = nationsRepository.findByCod(teamReq.getNation());
@@ -71,10 +106,8 @@ public class TeamsServiceImpl implements TeamsService{
 	public TeamsResponse updateTeamManagerMode(UpdateTeamReq teamReq, String username, Long id) {
 		Users user = usersRepository.findByUsername(username);
 		Teams team = teamsRepository.findByIdTeamAndManagerMode(id, user);
-		
-		if(Objects.isNull(team)) {
-			new RuntimeException("Não encotrado nenhum registro com o id: "+ id);
-		}
+
+		teamReq.dtoToUpdateTeam(team);
 		
 		teamsRepository.save(team);
 		

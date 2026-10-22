@@ -2,6 +2,7 @@ package com.rcmfootball.rcmfootball.service.impl.career;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,11 @@ import com.rcmfootball.rcmfootball.request.career.PlayersSkillsRequest;
 import com.rcmfootball.rcmfootball.request.career.UpdatePlayersReq;
 import com.rcmfootball.rcmfootball.response.career.PlayerSkillResponse;
 import com.rcmfootball.rcmfootball.response.career.PlayersResponse;
-import com.rcmfootball.rcmfootball.service.career.PlayerModeService;
+import com.rcmfootball.rcmfootball.service.career.PlayersService;
 
 
 @Service
-public class PlayerModeServiceImpl implements PlayerModeService{
+public class PlayersServiceImpl implements PlayersService{
 	@Autowired
 	private PlayersRepository playersRepository;
 	@Autowired
@@ -35,9 +36,15 @@ public class PlayerModeServiceImpl implements PlayerModeService{
 	private UsersRepository usersRepository;
 	
 	@Override
+	public PlayersResponse playerCharacterProfile(String username) {
+		Users user = usersRepository.findByUsername(username);
+		return PlayersResponse.toDto(playersRepository.findByUserCharacterAndPlayerMode(user, user));
+	}
+	
+	@Override
 	public PlayersResponse savePlayerOfUser(PlayersRequest playerReq, String username) {
-		Users userCharacter = usersRepository.findByUsername("SeuMadruga");
-		Players playerExisting = playersRepository.findByUserCharacterAndPlayerMode(userCharacter, userCharacter);
+		Users user = usersRepository.findByUsername("SeuMadruga");
+		Players playerExisting = playersRepository.findByUserCharacterAndPlayerMode(user, user);
 		
 		if(Objects.nonNull(playerExisting)) {
 			throw new RuntimeException("É possivel criar apenas um jogador personagem");
@@ -46,8 +53,8 @@ public class PlayerModeServiceImpl implements PlayerModeService{
 		Players player = playerReq.toEntity();
 		Nationality nation = nationsRepository.findByCod(playerReq.getNation());
 		player.setNation(nation);
-		player.setPlayerMode(userCharacter);
-		player.setUserCharacter(userCharacter);
+		player.setPlayerMode(user);
+		player.setUserCharacter(user);
 		playersRepository.save(player);
 		
 		return PlayersResponse.toDto(player);
@@ -80,6 +87,16 @@ public class PlayerModeServiceImpl implements PlayerModeService{
 		playersRepository.delete(player);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	@Override
+	public List<PlayersResponse> allPlayersOfPlayerMode(String username){
+		Users user = usersRepository.findByUsername(username);
+		List<Players> players = playersRepository.findByPlayerMode(user);
+		
+		return players.stream()
+				.map(PlayersResponse::toDto)
+				.collect(Collectors.toList());
 	}
 	
 	@Override
@@ -132,22 +149,31 @@ public class PlayerModeServiceImpl implements PlayerModeService{
 	}
 	
 	@Override
+	public PlayerSkillResponse findSkillByPlayerCharacter(String username) {
+		Users user = usersRepository.findByUsername(username);
+		Players player = playersRepository.findByUserCharacterAndPlayerMode(user, user);
+		PlayersSkills playerSkill = playerSkillRepository.findByPlayer(player);
+		return PlayerSkillResponse.toDto(playerSkill, player);
+	}
+	
+	@Override
 	public PlayerSkillResponse createSkillsPlayerCharacter(PlayersSkillsRequest skillsReq, String username) {
 		Users user = usersRepository.findByUsername(username);
 		Players player = playersRepository.findByUserCharacterAndPlayerMode(user, user);
 		PlayersSkills skillsExisting = playerSkillRepository.findByPlayer(player);
 		
-		if(Objects.nonNull(skillsExisting)) {
-			new RuntimeException("não é possivel adicionar mais de uma skill para o mesmo jogador");
+		if(skillsExisting != null) {
+			throw new RuntimeException("não é possivel adicionar mais de uma skill para o mesmo jogador");
 		}
 		
 		PlayersSkills playerSkill = skillsReq.toEntity();
+		playerSkill.setPlayer(player);
 		player.setOverall(skillsReq.calculateOverall(playerSkill, player));
 	
 		playersRepository.save(player);
 		playerSkillRepository.save(playerSkill);
 		
-		return PlayerSkillResponse.toDto(playerSkill);
+		return PlayerSkillResponse.toDto(playerSkill, player);
 	}
 	
 	@Override
@@ -157,7 +183,7 @@ public class PlayerModeServiceImpl implements PlayerModeService{
 		PlayersSkills playerSkill = playerSkillRepository.findByPlayer(player);
 		
 		if(Objects.isNull(playerSkill)) {
-			new RuntimeException("nenhuma skill existente, crie uma skill para poder atualizar");
+			throw new RuntimeException("nenhuma skill existente, crie uma skill para poder atualizar");
 		}
 		
 		skillsReq.updateSkill(playerSkill);
@@ -166,7 +192,7 @@ public class PlayerModeServiceImpl implements PlayerModeService{
 		playersRepository.save(player);
 		playerSkillRepository.save(playerSkill);
 		
-		return PlayerSkillResponse.toDto(playerSkill);
+		return PlayerSkillResponse.toDto(playerSkill, player);
 	}
 	 
 }

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamsRequest {
+	private String teamCrestUrl;
 	@NotBlank(message="o nome do time é obrigatório")
 	@Size(min=4, max=30, message="o mínimo de caracteres é 4 e o máximo 30")
 	private String name;
@@ -31,6 +32,7 @@ public class TeamsRequest {
 	
 	public Teams toEntity() {
 		Teams team = new Teams();
+		team.setTeamCrestUrl(teamCrestUrl);
 		team.setName(name);
 		team.setAbbreviatedName(abbreviatedName);
 		team.setNumberOfFans(numberOfFans);

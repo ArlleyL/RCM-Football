@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ManagersResponse {
 	private Long idManager;
+	private String urlPhoto;
 	private String name;
 	private ProfissionEnum profission;
 	private Nationality nation;
@@ -24,6 +25,7 @@ public class ManagersResponse {
 	public static ManagersResponse toDto(Managers m) {
 		return new ManagersResponse(
 				m.getIdManager(),
+				m.getUrlPhoto(),
 				m.getName(),
 				m.getProfission(),
 				m.getNation(),
